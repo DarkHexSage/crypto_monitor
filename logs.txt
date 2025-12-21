@@ -1,0 +1,25 @@
+2025-12-07 03:37:13,729 - INFO - Starting Crypto Price Monitor
+2025-12-07 03:37:13,730 - ERROR - config.json not found. Please copy config.example.json to config.json
+2025-12-07 03:37:13,730 - ERROR - Error: [Errno 2] No such file or directory: 'config.json'
+Traceback (most recent call last):
+  File "/home/kali/Desktop/portofolio/python-automation-portfolio/projects/2_crypto_monitor/src/main.py", line 41, in main
+    config = load_config()
+  File "/home/kali/Desktop/portofolio/python-automation-portfolio/projects/2_crypto_monitor/src/main.py", line 28, in load_config
+    with open('config.json', 'r') as f:
+         ~~~~^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'config.json'
+2025-12-07 03:37:58,342 - INFO - Starting Crypto Price Monitor
+2025-12-07 03:37:58,342 - INFO - Configuration loaded successfully
+2025-12-07 03:37:58,342 - INFO - Config: {'name': 'Crypto Price Monitor', 'version': '1.0.0', 'debug': False, 'logging': True, 'schedule': 'daily'}
+2025-12-07 03:37:58,342 - INFO - Process completed successfully
+2025-12-07 03:40:27,188 - INFO - ============================================================
+2025-12-07 03:40:27,188 - INFO - Starting Crypto Price Monitor
+2025-12-07 03:40:27,188 - INFO - ============================================================
+2025-12-07 03:40:27,188 - INFO - ✅ Config loaded: Crypto Price Monitor
+2025-12-07 03:40:27,188 - INFO - Fetching crypto prices from API...
+2025-12-07 03:40:27,477 - INFO - ✅ Bitcoin: $89,453.00
+2025-12-07 03:40:27,477 - INFO - ✅ Ethereum: $3,040.98
+2025-12-07 03:40:27,478 - INFO - ✅ Saved to prices.csv
+2025-12-07 03:40:27,482 - INFO - ============================================================
+2025-12-07 03:40:27,483 - INFO - ✅ Process completed successfully!
+2025-12-07 03:40:27,483 - INFO - ============================================================
