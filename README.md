@@ -179,6 +179,10 @@ pytest tests/ -v
 curl http://localhost:5000/api/prices
 ```
 
+## Screenshot
+<img width="1333" height="846" alt="image" src="https://github.com/user-attachments/assets/2ff123c4-1bd7-4799-ac69-a3a9969ddfa0" />
+
+
 ## 📝 License
 
 MIT - Free to use and modify
