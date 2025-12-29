@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Price Dashboard - Real-time BTC, ETH, SOL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,200 +13,285 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', 'Roboto', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', sans-serif;
+            font-weight: 400;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-image: url('https://pixelz.cc/wp-content/uploads/2018/08/bitcoin-cryptocurrency-coins-uhd-4k-wallpaper.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.65);
+            z-index: 1;
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
+            position: relative;
+            z-index: 2;
         }
 
         .header {
             text-align: center;
-            color: white;
-            margin-bottom: 40px;
-            animation: slideDown 0.6s ease-out;
+            color: #e2e8f0;
+            margin-bottom: 50px;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 30px;
         }
 
         .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            color: #f1f5f9;
         }
 
         .header p {
-            font-size: 1.1em;
-            opacity: 0.95;
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 400;
+            letter-spacing: 0.5px;
         }
 
         .last-update {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-top: 10px;
+            font-size: 12px;
+            color: #e2e8f0;
+            margin-top: 15px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
         }
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .price-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .price-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
-        }
-
-        .price-card.btc {
-            border-top: 5px solid #f7931a;
-        }
-
-        .price-card.eth {
-            border-top: 5px solid #627eea;
-        }
-
-        .price-card.sol {
-            border-top: 5px solid #14f195;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            font-weight: bold;
-            color: white;
-        }
-
-        .icon.btc {
-            background: linear-gradient(135deg, #f7931a, #f9a825);
-        }
-
-        .icon.eth {
-            background: linear-gradient(135deg, #627eea, #6f9aff);
-        }
-
-        .icon.sol {
-            background: linear-gradient(135deg, #14f195, #19f9a8);
-        }
-
-        .crypto-name {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .crypto-name h2 {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .crypto-symbol {
-            color: #999;
-            font-size: 0.9em;
-        }
-
-        .price {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .change {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 1.1em;
-            transition: all 0.3s ease;
-        }
-
-        .change.positive {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .change.negative {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .change-symbol {
-            margin-right: 5px;
-            font-size: 1.2em;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-
-        .stat {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-label {
-            color: #999;
-            font-size: 0.85em;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            color: #333;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-
-        .refresh-indicator {
-            text-align: center;
-            color: white;
-            font-size: 0.9em;
-            margin-bottom: 30px;
-            opacity: 0.8;
+        .last-update.offline {
+            color: #ef4444;
         }
 
         .refresh-dot {
             display: inline-block;
             width: 8px;
             height: 8px;
-            background: #28a745;
+            background: #10b981;
             border-radius: 50%;
             margin-right: 8px;
             animation: pulse 2s infinite;
+        }
+
+        .refresh-dot.offline {
+            background: #ef4444;
+            animation: none;
+        }
+
+        .status-text {
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .status-text.live {
+            color: #10b981;
+        }
+
+        .status-text.offline {
+            color: #ef4444;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .price-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-radius: 0;
+            padding: 40px 35px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42);
+        }
+
+        .price-card.eth::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+
+        .price-card.sol::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+
+        .price-card:hover {
+            border-color: #475569;
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            gap: 25px;
+        }
+
+        .crypto-name h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .crypto-symbol {
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            border: none;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: #cbd5e1;
+            background: none;
+        }
+
+        .icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 0px;
+        }
+
+        .price {
+            font-size: 42px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 18px;
+            font-family: 'Roboto Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .change {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 0;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Roboto Mono', monospace;
+            letter-spacing: 0.5px;
+            border: 1px solid;
+        }
+
+        .change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-color: #10b981;
+        }
+
+        .change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .change-symbol {
+            margin-right: 6px;
+            font-size: 14px;
+        }
+
+        .divider {
+            border-top: 1px solid #334155;
+            margin: 20px 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .stat {
+            background: rgba(51, 65, 85, 0.3);
+            padding: 16px;
+            border: 1px solid #334155;
+            border-radius: 0;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 11px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            color: #cbd5e1;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Roboto Mono', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .refresh-indicator {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 35px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            border: 1px solid #334155;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #334155;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .footer p {
+            margin: 6px 0;
         }
 
         @keyframes pulse {
@@ -217,50 +303,33 @@
             }
         }
 
-        @keyframes slideDown {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(-30px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .footer {
-            text-align: center;
-            color: white;
-            opacity: 0.8;
-            font-size: 0.9em;
-            margin-top: 40px;
-        }
-
-        .footer p {
-            margin: 5px 0;
+        .price-card {
+            animation: fadeIn 0.5s ease-out;
         }
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2em;
+                font-size: 32px;
             }
 
             .price {
-                font-size: 1.8em;
+                font-size: 28px;
             }
 
             .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
                 grid-template-columns: 1fr;
             }
         }
@@ -269,17 +338,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>💰 Crypto Dashboard</h1>
-            <p>Real-time Bitcoin, Ethereum & Solana Prices</p>
+            <h1>MARKET MONITOR</h1>
+            <p>Cryptocurrency Price Tracking Dashboard</p>
             <div class="last-update">
-                <span class="refresh-dot"></span>
-                Last updated: <span id="lastUpdate">Loading...</span>
+                <span class="refresh-dot" id="lastUpdateDot"></span>
+                Last Updated: <span id="lastUpdate">Connecting...</span>
             </div>
         </div>
 
         <div class="refresh-indicator">
-            <span class="refresh-dot"></span>
-            Live updates every 30 seconds
+            <span class="refresh-dot" id="rtDot"></span>
+            <span id="rtStatus" class="status-text live">Real-time data | Updates every 30 seconds</span>
         </div>
 
         <div class="dashboard">
@@ -290,7 +359,9 @@
                         <h2>Bitcoin</h2>
                         <span class="crypto-symbol">BTC</span>
                     </div>
-                    <div class="icon btc">₿</div>
+                    <div class="icon">
+                        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg" alt="Bitcoin Logo">
+                    </div>
                 </div>
 
                 <div class="price" id="btcPrice">$0.00</div>
@@ -300,6 +371,8 @@
                     <span id="btcChangeValue">0.00%</span>
                 </div>
 
+                <div class="divider"></div>
+
                 <div class="stats">
                     <div class="stat">
                         <div class="stat-label">24h Change</div>
@@ -307,7 +380,7 @@
                     </div>
                     <div class="stat">
                         <div class="stat-label">Status</div>
-                        <div class="stat-value">Live</div>
+                        <div class="stat-value" id="btcStatus">Live</div>
                     </div>
                 </div>
             </div>
@@ -319,7 +392,9 @@
                         <h2>Ethereum</h2>
                         <span class="crypto-symbol">ETH</span>
                     </div>
-                    <div class="icon eth">Ξ</div>
+                    <div class="icon">
+                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.svg" alt="Ethereum Logo">
+                    </div>
                 </div>
 
                 <div class="price" id="ethPrice">$0.00</div>
@@ -329,6 +404,8 @@
                     <span id="ethChangeValue">0.00%</span>
                 </div>
 
+                <div class="divider"></div>
+
                 <div class="stats">
                     <div class="stat">
                         <div class="stat-label">24h Change</div>
@@ -336,7 +413,7 @@
                     </div>
                     <div class="stat">
                         <div class="stat-label">Status</div>
-                        <div class="stat-value">Live</div>
+                        <div class="stat-value" id="ethStatus">Live</div>
                     </div>
                 </div>
             </div>
@@ -348,7 +425,9 @@
                         <h2>Solana</h2>
                         <span class="crypto-symbol">SOL</span>
                     </div>
-                    <div class="icon sol">◎</div>
+                    <div class="icon">
+                        <img src="https://cryptologos.cc/logos/solana-sol-logo.svg" alt="Solana Logo">
+                    </div>
                 </div>
 
                 <div class="price" id="solPrice">$0.00</div>
@@ -358,6 +437,8 @@
                     <span id="solChangeValue">0.00%</span>
                 </div>
 
+                <div class="divider"></div>
+
                 <div class="stats">
                     <div class="stat">
                         <div class="stat-label">24h Change</div>
@@ -365,20 +446,97 @@
                     </div>
                     <div class="stat">
                         <div class="stat-label">Status</div>
-                        <div class="stat-value">Live</div>
+                        <div class="stat-value" id="solStatus">Live</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>🚀 Professional Crypto Price Monitoring</p>
-            <p>Data powered by CoinGecko API | Updates every 30 seconds</p>
-            <p style="margin-top: 15px; font-size: 0.85em;">This is a real-time crypto monitoring dashboard - No frontend nonsense, just REAL data</p>
+            <p>Professional Cryptocurrency Market Data</p>
+            <p>Powered by Real-time Exchange APIs | Enterprise Grade Monitoring</p>
         </div>
     </div>
 
     <script>
+        let isConnected = false;
+
+        // Check backend connectivity
+        function checkBackendConnection() {
+            fetch('/api/prices')
+                .then(response => {
+                    if (response.ok) {
+                        setBackendStatus(true);
+                        return response.json();
+                    } else {
+                        setBackendStatus(false);
+                        throw new Error('Backend error');
+                    }
+                })
+                .then(data => {
+                    if (data && data.last_update) {
+                        document.getElementById('lastUpdate').textContent = data.last_update;
+                    }
+                    updateAllPrices(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    setBackendStatus(false);
+                    document.getElementById('lastUpdate').textContent = 'Not Connected';
+                });
+        }
+
+        // Update backend status indicators
+        function setBackendStatus(connected) {
+            isConnected = connected;
+            
+            // Update last-update dot and text color
+            const lastUpdateDiv = document.querySelector('.last-update');
+            const lastUpdateDot = document.getElementById('lastUpdateDot');
+            if (connected) {
+                lastUpdateDiv.classList.remove('offline');
+                lastUpdateDot.classList.remove('offline');
+                lastUpdateDot.style.animation = 'pulse 2s infinite';
+            } else {
+                lastUpdateDiv.classList.add('offline');
+                lastUpdateDot.classList.add('offline');
+                lastUpdateDot.style.animation = 'none';
+            }
+
+            // Update real-time status
+            const rtDot = document.getElementById('rtDot');
+            const rtStatus = document.getElementById('rtStatus');
+            
+            if (connected) {
+                rtDot.classList.remove('offline');
+                rtStatus.classList.remove('offline');
+                rtStatus.classList.add('live');
+                rtDot.style.animation = 'pulse 2s infinite';
+                rtStatus.textContent = 'Real-time data Live | Updates every 30 seconds';
+            } else {
+                rtDot.classList.add('offline');
+                rtStatus.classList.remove('live');
+                rtStatus.classList.add('offline');
+                rtDot.style.animation = 'none';
+                rtStatus.textContent = 'Not Live | Waiting for backend connection...';
+            }
+
+            // Update card status values
+            const statusElements = ['btcStatus', 'ethStatus', 'solStatus'];
+            statusElements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (connected) {
+                        el.textContent = 'Live';
+                        el.style.color = '#10b981';
+                    } else {
+                        el.textContent = 'Not Live';
+                        el.style.color = '#ef4444';
+                    }
+                }
+            });
+        }
+
         // Format currency
         function formatCurrency(value) {
             return new Intl.NumberFormat('en-US', {
@@ -394,72 +552,85 @@
             return Math.abs(value).toFixed(2) + '%';
         }
 
-        // Update dashboard
-        function updatePrices() {
-            fetch('/api/prices')
-                .then(response => response.json())
-                .then(data => {
-                    // Update BTC
-                    document.getElementById('btcPrice').textContent = formatCurrency(data.BTC.price);
-                    const btcChange = data.BTC.change;
-                    const btcChangePercent = formatPercent(btcChange);
-                    document.getElementById('btcChangeValue').textContent = btcChangePercent;
-                    document.getElementById('btcChangePercent').textContent = btcChangePercent;
-                    
-                    const btcChangeEl = document.getElementById('btcChange');
-                    if (btcChange >= 0) {
-                        btcChangeEl.className = 'change positive';
-                        btcChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${btcChangePercent}</span>`;
-                    } else {
-                        btcChangeEl.className = 'change negative';
-                        btcChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${btcChangePercent}</span>`;
-                    }
+        // Update all prices
+        function updateAllPrices(data) {
+            if (!data) return;
 
-                    // Update ETH
-                    document.getElementById('ethPrice').textContent = formatCurrency(data.ETH.price);
-                    const ethChange = data.ETH.change;
-                    const ethChangePercent = formatPercent(ethChange);
-                    document.getElementById('ethChangeValue').textContent = ethChangePercent;
-                    document.getElementById('ethChangePercent').textContent = ethChangePercent;
-                    
-                    const ethChangeEl = document.getElementById('ethChange');
-                    if (ethChange >= 0) {
-                        ethChangeEl.className = 'change positive';
-                        ethChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${ethChangePercent}</span>`;
-                    } else {
-                        ethChangeEl.className = 'change negative';
-                        ethChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${ethChangePercent}</span>`;
-                    }
+            // Update BTC
+            if (data.BTC) {
+                document.getElementById('btcPrice').textContent = formatCurrency(data.BTC.price);
+                const btcChange = data.BTC.change;
+                const btcChangePercent = formatPercent(btcChange);
+                document.getElementById('btcChangeValue').textContent = btcChangePercent;
+                document.getElementById('btcChangePercent').textContent = btcChangePercent;
+                
+                const btcChangeEl = document.getElementById('btcChange');
+                if (btcChange >= 0) {
+                    btcChangeEl.className = 'change positive';
+                    btcChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${btcChangePercent}</span>`;
+                } else {
+                    btcChangeEl.className = 'change negative';
+                    btcChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${btcChangePercent}</span>`;
+                }
+            }
 
-                    // Update SOL
-                    document.getElementById('solPrice').textContent = formatCurrency(data.SOL.price);
-                    const solChange = data.SOL.change;
-                    const solChangePercent = formatPercent(solChange);
-                    document.getElementById('solChangeValue').textContent = solChangePercent;
-                    document.getElementById('solChangePercent').textContent = solChangePercent;
-                    
-                    const solChangeEl = document.getElementById('solChange');
-                    if (solChange >= 0) {
-                        solChangeEl.className = 'change positive';
-                        solChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${solChangePercent}</span>`;
-                    } else {
-                        solChangeEl.className = 'change negative';
-                        solChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${solChangePercent}</span>`;
-                    }
+            // Update ETH
+            if (data.ETH) {
+                document.getElementById('ethPrice').textContent = formatCurrency(data.ETH.price);
+                const ethChange = data.ETH.change;
+                const ethChangePercent = formatPercent(ethChange);
+                document.getElementById('ethChangeValue').textContent = ethChangePercent;
+                document.getElementById('ethChangePercent').textContent = ethChangePercent;
+                
+                const ethChangeEl = document.getElementById('ethChange');
+                if (ethChange >= 0) {
+                    ethChangeEl.className = 'change positive';
+                    ethChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${ethChangePercent}</span>`;
+                } else {
+                    ethChangeEl.className = 'change negative';
+                    ethChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${ethChangePercent}</span>`;
+                }
+            }
 
-                    // Update last update time
-                    if (data.last_update) {
-                        document.getElementById('lastUpdate').textContent = data.last_update;
-                    }
-                })
-                .catch(error => console.error('Error fetching prices:', error));
+            // Update SOL
+            if (data.SOL) {
+                document.getElementById('solPrice').textContent = formatCurrency(data.SOL.price);
+                const solChange = data.SOL.change;
+                const solChangePercent = formatPercent(solChange);
+                document.getElementById('solChangeValue').textContent = solChangePercent;
+                document.getElementById('solChangePercent').textContent = solChangePercent;
+                
+                const solChangeEl = document.getElementById('solChange');
+                if (solChange >= 0) {
+                    solChangeEl.className = 'change positive';
+                    solChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${solChangePercent}</span>`;
+                } else {
+                    solChangeEl.className = 'change negative';
+                    solChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${solChangePercent}</span>`;
+                }
+            }
         }
 
-        // Initial update
-        updatePrices();
+        // Initial check
+        checkBackendConnection();
 
-        // Update every 30 seconds
-        setInterval(updatePrices, 30000);
+        // Check every 30 seconds
+        setInterval(checkBackendConnection, 30000);
+
+        // Also check connection every 5 seconds for faster feedback
+        setInterval(() => {
+            fetch('/api/prices', { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        setBackendStatus(true);
+                    } else {
+                        setBackendStatus(false);
+                    }
+                })
+                .catch(error => {
+                    setBackendStatus(false);
+                });
+        }, 5000);
     </script>
 </body>
 </html>
