@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  crypto-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crypto-monitor
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000').read()"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 3
+    restart: unless-stopped
