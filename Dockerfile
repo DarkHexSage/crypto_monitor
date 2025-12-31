@@ -21,7 +21,7 @@ EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('https://localhost:5000').read()"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000').read()"
     
 # Run Flask app
 CMD ["python", "flask_dashboard.py"]
