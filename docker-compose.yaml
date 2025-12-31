@@ -17,7 +17,7 @@ services:
       - ./data:/app/data
       - ./logs:/app/logs
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen(''https://adragportfolio.info.gf:32781/').read()"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen(''http://localhost:5000/').read()"]
       interval: 30s
       timeout: 10s
       start_period: 5s
