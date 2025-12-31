@@ -10,14 +10,12 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - FLASK_ENV=production
-      # For reverse proxy (Caddy): set this to the path where app is served
-      # e.g., /crypto-monitor for https://domain.com/crypto-monitor
-      - APPLICATION_ROOT=${APPLICATION_ROOT:-/}
+      - APPLICATION_ROOT=/crypto-monitor
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen(''https://adragportfolio.info.gf/crypto-monitor/api/prices').read()"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/crypto-monitor/api/prices').read()"]
       interval: 30s
       timeout: 10s
       start_period: 5s
