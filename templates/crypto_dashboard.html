@@ -458,179 +458,176 @@
         </div>
     </div>
 
-    <script>
-        let isConnected = false;
+   <script>
+    let isConnected = false;
+    
+    // Get API path from template
+    const API_PATH = "{{ api_path }}";
 
-        // Check backend connectivity
-        function checkBackendConnection() {
-            fetch('/api/prices')
-                .then(response => {
-                    if (response.ok) {
-                        setBackendStatus(true);
-                        return response.json();
-                    } else {
-                        setBackendStatus(false);
-                        throw new Error('Backend error');
-                    }
-                })
-                .then(data => {
-                    if (data && data.last_update) {
-                        document.getElementById('lastUpdate').textContent = data.last_update;
-                    }
-                    updateAllPrices(data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
+    // Check backend connectivity
+    function checkBackendConnection() {
+        fetch(API_PATH + '/prices')  // ⭐ Use API_PATH
+            .then(response => {
+                if (response.ok) {
+                    setBackendStatus(true);
+                    return response.json();
+                } else {
                     setBackendStatus(false);
-                    document.getElementById('lastUpdate').textContent = 'Not Connected';
-                });
-        }
-
-        // Update backend status indicators
-        function setBackendStatus(connected) {
-            isConnected = connected;
-            
-            // Update last-update dot and text color
-            const lastUpdateDiv = document.querySelector('.last-update');
-            const lastUpdateDot = document.getElementById('lastUpdateDot');
-            if (connected) {
-                lastUpdateDiv.classList.remove('offline');
-                lastUpdateDot.classList.remove('offline');
-                lastUpdateDot.style.animation = 'pulse 2s infinite';
-            } else {
-                lastUpdateDiv.classList.add('offline');
-                lastUpdateDot.classList.add('offline');
-                lastUpdateDot.style.animation = 'none';
-            }
-
-            // Update real-time status
-            const rtDot = document.getElementById('rtDot');
-            const rtStatus = document.getElementById('rtStatus');
-            
-            if (connected) {
-                rtDot.classList.remove('offline');
-                rtStatus.classList.remove('offline');
-                rtStatus.classList.add('live');
-                rtDot.style.animation = 'pulse 2s infinite';
-                rtStatus.textContent = 'Real-time data Live | Updates every 30 seconds';
-            } else {
-                rtDot.classList.add('offline');
-                rtStatus.classList.remove('live');
-                rtStatus.classList.add('offline');
-                rtDot.style.animation = 'none';
-                rtStatus.textContent = 'Not Live | Waiting for backend connection...';
-            }
-
-            // Update card status values
-            const statusElements = ['btcStatus', 'ethStatus', 'solStatus'];
-            statusElements.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (connected) {
-                        el.textContent = 'Live';
-                        el.style.color = '#10b981';
-                    } else {
-                        el.textContent = 'Not Live';
-                        el.style.color = '#ef4444';
-                    }
+                    throw new Error('Backend error');
                 }
+            })
+            .then(data => {
+                if (data && data.last_update) {
+                    document.getElementById('lastUpdate').textContent = data.last_update;
+                }
+                updateAllPrices(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setBackendStatus(false);
+                document.getElementById('lastUpdate').textContent = 'Not Connected';
             });
+    }
+
+    // Update backend status indicators
+    function setBackendStatus(connected) {
+        isConnected = connected;
+        
+        const lastUpdateDiv = document.querySelector('.last-update');
+        const lastUpdateDot = document.getElementById('lastUpdateDot');
+        if (connected) {
+            lastUpdateDiv.classList.remove('offline');
+            lastUpdateDot.classList.remove('offline');
+            lastUpdateDot.style.animation = 'pulse 2s infinite';
+        } else {
+            lastUpdateDiv.classList.add('offline');
+            lastUpdateDot.classList.add('offline');
+            lastUpdateDot.style.animation = 'none';
         }
 
-        // Format currency
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(value);
+        const rtDot = document.getElementById('rtDot');
+        const rtStatus = document.getElementById('rtStatus');
+        
+        if (connected) {
+            rtDot.classList.remove('offline');
+            rtStatus.classList.remove('offline');
+            rtStatus.classList.add('live');
+            rtDot.style.animation = 'pulse 2s infinite';
+            rtStatus.textContent = 'Real-time data Live | Updates every 30 seconds';
+        } else {
+            rtDot.classList.add('offline');
+            rtStatus.classList.remove('live');
+            rtStatus.classList.add('offline');
+            rtDot.style.animation = 'none';
+            rtStatus.textContent = 'Not Live | Waiting for backend connection...';
         }
 
-        // Format percentage
-        function formatPercent(value) {
-            return Math.abs(value).toFixed(2) + '%';
-        }
-
-        // Update all prices
-        function updateAllPrices(data) {
-            if (!data) return;
-
-            // Update BTC
-            if (data.BTC) {
-                document.getElementById('btcPrice').textContent = formatCurrency(data.BTC.price);
-                const btcChange = data.BTC.change;
-                const btcChangePercent = formatPercent(btcChange);
-                document.getElementById('btcChangeValue').textContent = btcChangePercent;
-                document.getElementById('btcChangePercent').textContent = btcChangePercent;
-                
-                const btcChangeEl = document.getElementById('btcChange');
-                if (btcChange >= 0) {
-                    btcChangeEl.className = 'change positive';
-                    btcChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${btcChangePercent}</span>`;
+        const statusElements = ['btcStatus', 'ethStatus', 'solStatus'];
+        statusElements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                if (connected) {
+                    el.textContent = 'Live';
+                    el.style.color = '#10b981';
                 } else {
-                    btcChangeEl.className = 'change negative';
-                    btcChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${btcChangePercent}</span>`;
+                    el.textContent = 'Not Live';
+                    el.style.color = '#ef4444';
                 }
             }
+        });
+    }
 
-            // Update ETH
-            if (data.ETH) {
-                document.getElementById('ethPrice').textContent = formatCurrency(data.ETH.price);
-                const ethChange = data.ETH.change;
-                const ethChangePercent = formatPercent(ethChange);
-                document.getElementById('ethChangeValue').textContent = ethChangePercent;
-                document.getElementById('ethChangePercent').textContent = ethChangePercent;
-                
-                const ethChangeEl = document.getElementById('ethChange');
-                if (ethChange >= 0) {
-                    ethChangeEl.className = 'change positive';
-                    ethChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${ethChangePercent}</span>`;
-                } else {
-                    ethChangeEl.className = 'change negative';
-                    ethChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${ethChangePercent}</span>`;
-                }
-            }
+    // Format currency
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(value);
+    }
 
-            // Update SOL
-            if (data.SOL) {
-                document.getElementById('solPrice').textContent = formatCurrency(data.SOL.price);
-                const solChange = data.SOL.change;
-                const solChangePercent = formatPercent(solChange);
-                document.getElementById('solChangeValue').textContent = solChangePercent;
-                document.getElementById('solChangePercent').textContent = solChangePercent;
-                
-                const solChangeEl = document.getElementById('solChange');
-                if (solChange >= 0) {
-                    solChangeEl.className = 'change positive';
-                    solChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${solChangePercent}</span>`;
-                } else {
-                    solChangeEl.className = 'change negative';
-                    solChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${solChangePercent}</span>`;
-                }
+    // Format percentage
+    function formatPercent(value) {
+        return Math.abs(value).toFixed(2) + '%';
+    }
+
+    // Update all prices
+    function updateAllPrices(data) {
+        if (!data) return;
+
+        if (data.BTC) {
+            document.getElementById('btcPrice').textContent = formatCurrency(data.BTC.price);
+            const btcChange = data.BTC.change;
+            const btcChangePercent = formatPercent(btcChange);
+            document.getElementById('btcChangeValue').textContent = btcChangePercent;
+            document.getElementById('btcChangePercent').textContent = btcChangePercent;
+            
+            const btcChangeEl = document.getElementById('btcChange');
+            if (btcChange >= 0) {
+                btcChangeEl.className = 'change positive';
+                btcChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${btcChangePercent}</span>`;
+            } else {
+                btcChangeEl.className = 'change negative';
+                btcChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${btcChangePercent}</span>`;
             }
         }
 
-        // Initial check
-        checkBackendConnection();
+        if (data.ETH) {
+            document.getElementById('ethPrice').textContent = formatCurrency(data.ETH.price);
+            const ethChange = data.ETH.change;
+            const ethChangePercent = formatPercent(ethChange);
+            document.getElementById('ethChangeValue').textContent = ethChangePercent;
+            document.getElementById('ethChangePercent').textContent = ethChangePercent;
+            
+            const ethChangeEl = document.getElementById('ethChange');
+            if (ethChange >= 0) {
+                ethChangeEl.className = 'change positive';
+                ethChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${ethChangePercent}</span>`;
+            } else {
+                ethChangeEl.className = 'change negative';
+                ethChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${ethChangePercent}</span>`;
+            }
+        }
 
-        // Check every 30 seconds
-        setInterval(checkBackendConnection, 30000);
+        if (data.SOL) {
+            document.getElementById('solPrice').textContent = formatCurrency(data.SOL.price);
+            const solChange = data.SOL.change;
+            const solChangePercent = formatPercent(solChange);
+            document.getElementById('solChangeValue').textContent = solChangePercent;
+            document.getElementById('solChangePercent').textContent = solChangePercent;
+            
+            const solChangeEl = document.getElementById('solChange');
+            if (solChange >= 0) {
+                solChangeEl.className = 'change positive';
+                solChangeEl.innerHTML = `<span class="change-symbol">↑</span><span>${solChangePercent}</span>`;
+            } else {
+                solChangeEl.className = 'change negative';
+                solChangeEl.innerHTML = `<span class="change-symbol">↓</span><span>${solChangePercent}</span>`;
+            }
+        }
+    }
 
-        // Also check connection every 5 seconds for faster feedback
-        setInterval(() => {
-            fetch('/api/prices', { method: 'HEAD' })
-                .then(response => {
-                    if (response.ok) {
-                        setBackendStatus(true);
-                    } else {
-                        setBackendStatus(false);
-                    }
-                })
-                .catch(error => {
+    // Initial check
+    checkBackendConnection();
+
+    // Check every 30 seconds
+    setInterval(checkBackendConnection, 30000);
+
+    // Also check connection every 5 seconds for faster feedback
+    setInterval(() => {
+        fetch(API_PATH + '/prices', { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    setBackendStatus(true);
+                } else {
                     setBackendStatus(false);
-                });
-        }, 5000);
-    </script>
+                }
+            })
+            .catch(error => {
+                setBackendStatus(false);
+            });
+    }, 5000);
+</script>
 </body>
 </html>
