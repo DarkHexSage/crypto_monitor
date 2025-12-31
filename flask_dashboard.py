@@ -3,14 +3,17 @@ Beautiful Crypto Price Dashboard
 Real-time BTC, ETH, SOL prices with beautiful UI
 """
 
+import os
 from flask import Flask, render_template, jsonify
 import requests
-import json
 from datetime import datetime
 import threading
 import time
 
 app = Flask(__name__)
+
+# Get base path from environment (e.g., /crypto-monitor or /)
+BASE_PATH = os.getenv('APPLICATION_ROOT', '/').rstrip('/')
 
 # Store latest prices
 crypto_data = {
@@ -27,7 +30,6 @@ def fetch_crypto_prices():
         response = requests.get(url, timeout=10)
         data = response.json()
         
-        # Update prices
         crypto_data['BTC']['price'] = data['bitcoin']['usd']
         crypto_data['BTC']['change'] = data['bitcoin']['usd_24h_change']
         
@@ -52,23 +54,24 @@ def update_prices_continuously():
         time.sleep(30)
 
 @app.route('/')
+@app.route(f'{BASE_PATH}/')
 def index():
     """Home page - crypto dashboard"""
-    return render_template('crypto_dashboard.html', data=crypto_data)
+    return render_template('crypto_dashboard.html', api_path=f'{BASE_PATH}/api')
 
 @app.route('/api/prices')
+@app.route(f'{BASE_PATH}/api/prices')
 def api_prices():
     """API endpoint for current prices"""
     return jsonify(crypto_data)
 
 if __name__ == '__main__':
-    # Start background price updater
     updater = threading.Thread(target=update_prices_continuously, daemon=True)
     updater.start()
     
-    # Initial fetch
     fetch_crypto_prices()
     
-    # Run Flask app
-    print("🚀 Crypto Dashboard running on http://localhost:5000")
+    print(f"🚀 Crypto Dashboard running on http://localhost:5000")
+    if BASE_PATH != '/':
+        print(f"📍 Base path: {BASE_PATH}")
     app.run(debug=True, host='0.0.0.0', port=5000)
