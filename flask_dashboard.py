@@ -4,7 +4,7 @@ Real-time BTC, ETH, SOL prices with beautiful UI
 """
 
 import os
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_from_directory
 import requests
 from datetime import datetime
 import threading
@@ -12,7 +12,6 @@ import time
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config['APPLICATION_ROOT'] = os.getenv('APPLICATION_ROOT', '/')
-# Get base path from environment (e.g., /crypto-monitor or /)
 BASE_PATH = os.getenv('APPLICATION_ROOT', '/').rstrip('/')
 
 # Store latest prices
@@ -52,6 +51,17 @@ def update_prices_continuously():
     while True:
         fetch_crypto_prices()
         time.sleep(30)
+
+# Favicon route - explicit serving for non-root paths
+@app.route('/favicon.ico')
+@app.route(f'{BASE_PATH}/favicon.ico')
+def favicon():
+    """Serve favicon.ico from static folder"""
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
 
 @app.route('/')
 @app.route(f'{BASE_PATH}/')
