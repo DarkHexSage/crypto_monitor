@@ -11,6 +11,7 @@ COPY src ./src
 COPY flask_dashboard.py .
 COPY templates ./templates
 COPY fix_icons.py .
+COPY static ./static
 COPY config.example.json ./config.json
 
 # Create data directory
