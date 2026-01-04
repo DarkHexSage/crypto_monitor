@@ -11,6 +11,7 @@ import threading
 import time
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
+app.config['APPLICATION_ROOT'] = os.getenv('APPLICATION_ROOT', '/')
 # Get base path from environment (e.g., /crypto-monitor or /)
 BASE_PATH = os.getenv('APPLICATION_ROOT', '/').rstrip('/')
 
