@@ -10,8 +10,7 @@ from datetime import datetime
 import threading
 import time
 
-app = Flask(__name__)
-
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 # Get base path from environment (e.g., /crypto-monitor or /)
 BASE_PATH = os.getenv('APPLICATION_ROOT', '/').rstrip('/')
 
